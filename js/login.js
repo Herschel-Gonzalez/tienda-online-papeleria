@@ -14,6 +14,13 @@ function iniciarSesion() {
             alert("sesion iniciada");
             existe = true;
             window.open("administrador.html","_self");
+            //guardamos la sesion
+            let sesion = {
+                usuario: correo,
+                sesion:"true",
+                tipo: usuario.tipo
+            };
+            localStorage.setItem('sesion', JSON.stringify(sesion));
             if (usuario.tipo == "admin") {
                 window.open("administrador.html","_self");
             }else{

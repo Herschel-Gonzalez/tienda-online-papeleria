@@ -1,6 +1,27 @@
 let products = [];
+let carrito = [];
 let capa = document.getElementById("capa");
+
+
+let sesion = JSON.parse(localStorage.getItem('sesion'));
+
+if (sesion.sesion=='true') {
+    let texto = '<a class="navbar-brand" id="is" onclick="cerrarSesion()">Cerrar sesión</a>';
+    document.getElementById("is").innerHTML=texto;
+}
+
+
+
+function cerrarSesion() {
+    sesion.sesion='false';
+    let texto = '<a class="navbar-brand" id="is" href="login.html">Iniciar Sesión</a>';
+    document.getElementById("is").innerHTML=texto;
+    localStorage.setItem('sesion', JSON.stringify(sesion));
+    alert('Sesion cerrada');
+}
+
 listarProductos();
+
 function listarProductos() {
     cargarProductos();
 
@@ -11,12 +32,13 @@ function listarProductos() {
         lista+='<h1 class="display-4 mt-4">MINISO</h1>';
         lista+='<p class="lead">from japan to the world!</p>';
         lista+='</div><div class="container" id="lista-productos">';
+        let posicion = 0;
         for (const producto of products) {
             lista += '<div class="card-deck mb-3 text-center">';
 
             lista += '<div class="card mb-4 shadow-sm">';
             lista += '<div class="card-body">';
-            lista += '<img src="' + producto.imagen + '" class="card-img-top">';
+            lista += '<img src="' + producto.imagen + '" class="card-img-top" width="200" height="400">';
             lista += '<div class="card-header">';
             lista += '<h4 class="my-0 font-weight-bold">' + producto.nombre + '</h4>';
             lista += '</div>';
@@ -25,9 +47,10 @@ function listarProductos() {
             lista += '<li> ' + producto.descripcion + '</li>';
             lista += '<li><h1 class="card-title pricing-card-title precio">$<span class="">' + producto.precio + '</span></h1></li>';
             lista += '</ul>';
-            lista += '<button class="btn btn-block btn-primary agregar-carrito" onclick="modificarProducto("'+producto.nombre+'")" data-id="1">Modificar</button>';
+            lista += '<button class="btn btn-block btn-primary agregar-carrito" onclick="agregarAlcarrito('+posicion+')" data-id="1">Agregar al carrito</button>';
             lista += '   </div>';
             lista += '</div>';
+            posicion++;
         }
         lista += '</div></main>';
         capa.innerHTML = lista;
@@ -43,15 +66,44 @@ function cargarProductos() {
     products = productoss;
 }
 
-function modificarProducto(nombre) {
-    alert("dedede");
-    window.open("modificarProducto.html","_self");
-    let form = document.getElementById("formulario");
-    let formulario = 'Nombre <input type="text" id="nom">Descripcion  <input type="text" id="desc">Precio  <input type="number" id="prec">Imagen <input type="file" id="imag" accept=".jpg, .jpeg, .png"><br><button onclick="guardarModificado("'+nombre+'")">Guardar</button>';
-    form.innerHTML=formulario;
+function modificarProducto(posicion) {
+    //alert("dedede");
+    //alert("llego");
+    let prodAmodificar = products[posicion];
+    let aler = "<h1>Modificara"+prodAmodificar.nombre+"</h1>";
+    aler+='<button id="close">Cerrar</button> ';
+    crearAlerta(aler);
+    //window.open("modificarProducto.html","_self");
+
 }
 
-function guardarModificado(nombre) {
+//carrito
+
+function agregarAlcarrito(posicion) {
+    cargarCarrito();
+    let prod = products[posicion];
+    let sesion = JSON.parse(localStorage.getItem('sesion'));
+    let registro = {
+        producto: prod,
+        sesion: sesion
+    }
+    carrito.push(registro);
+    localStorage.setItem('carrito',JSON.stringify(carrito));
+    alert("se agrego correctamente al carrito");
+
+}
+
+function cargarCarrito() {
+    let carro = JSON.parse(localStorage.getItem('carrito'));
+    carrito = carro;
+
+}
+
+
+//fin carrito
+
+
+function guardarModificado(posicion) {
     let nom = document.getElementById('nom').value;
     let descripcion = document.getElementById('desc').value;
     let precio = document.getElementById('prec').value;
